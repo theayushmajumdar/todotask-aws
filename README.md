@@ -1,133 +1,121 @@
-# Todotask-AWS: Serverless Todo List Application
+# Todotask-AWS Deployment Guide
 
-## Project Overview
+## Deployment Architecture Overview
 
-Todotask-AWS is a full-stack serverless Todo List application built using React for the frontend, AWS Lambda and API Gateway for the backend, and DynamoDB as the database. The application allows users to create, update, delete, and track tasks efficiently.
+The Todotask-AWS application will be deployed using a serverless architecture leveraging:
+- Frontend: AWS Amplify
+- Backend: AWS Lambda
+- Database: Amazon DynamoDB
+- API Gateway: AWS API Gateway
 
-## 🚀 Features
+## Detailed Deployment Steps
 
-- Create new tasks
-- Mark tasks as completed
-- Edit existing tasks
-- Delete tasks
-- Responsive dark-mode UI
-- Serverless backend deployment
-- Real-time task management
+### 1. Prepare AWS Services
 
-## 🛠 Tech Stack
+#### DynamoDB Table Setup
+1. Open AWS DynamoDB Console
+2. Create a new table named "Tasks"
+   - Partition key: `id` (String)
+   - Sort key: Leave blank
+3. Configure read/write capacity (use On-demand for cost-efficiency)
 
-- **Frontend:**
-  - React
-  - Material-UI
-  - Axios for API calls
+### 2. Backend Deployment (Lambda)
 
-- **Backend:**
-  - AWS Lambda
-  - Serverless Framework
-  - Node.js
-  - Express.js
+#### Create IAM Role for Lambda
+1. Open AWS IAM Console
+2. Create a new IAM Role
+3. Attach policies:
+   - AWSLambdaBasicExecutionRole
+   - AmazonDynamoDBFullAccess
+   - AWSAPIGatewayInvokeFullAccess
 
-- **Database:**
-  - Amazon DynamoDB
-
-- **Deployment:**
-  - AWS Serverless Application Model (SAM)
-  - AWS CloudFormation
-
-## 📦 Prerequisites
-
-- Node.js (v14+ recommended)
-- AWS Account
-- AWS CLI configured
-- Serverless Framework
-- React development environment
-
-## 🔧 Local Setup
-
-### Backend Setup
-
-1. Clone the repository
+#### Package Lambda Function
 ```bash
-git clone https://github.com/yourusername/todotask-aws.git
-cd todotask-aws
+# Zip backend files
+zip -r function.zip .
 ```
 
-2. Install backend dependencies
+#### Create Lambda Function
+1. Open AWS Lambda Console
+2. Create a new function
+3. Upload `function.zip`
+4. Set runtime to Node.js
+5. Configure handler: `index.handler`
+6. Assign the IAM role created earlier
+
+### 3. API Gateway Configuration
+1. Create new REST API
+2. Create resources matching your routes:
+   - `/task` (GET, POST, PUT)
+   - `/task/{id}` (DELETE)
+3. Integrate with Lambda function
+4. Enable CORS
+5. Deploy API and note the invoke URL
+
+### 4. Frontend Deployment with Amplify
+
+#### Prepare Repository
+1. Ensure `.env` file is updated with API Gateway URL
+2. Remove any local development configurations
+
+#### Amplify Deployment
 ```bash
-cd backend
-npm install
+# Install Amplify CLI
+npm install -g @aws-amplify/cli
+
+# Configure Amplify
+amplify configure
+
+# Initialize Amplify in project
+amplify init
+
+# Add hosting
+amplify add hosting
+
+# Publish
+amplify publish
 ```
 
-3. Configure AWS Credentials
-```bash
-aws configure
-```
+### 5. Environment Variables
 
-4. Set up environment variables
-- Create a `.env` file in the backend directory
-- Add necessary AWS configuration variables
+#### Backend Lambda
+- `DEVELOPMENT`: false
+- `AWS_REGION`: us-east-1
 
-### Frontend Setup
+#### Frontend Amplify
+- `REACT_APP_API_URL`: Your API Gateway URL
 
-1. Install frontend dependencies
-```bash
-cd frontend
-npm install
-```
+## Deployment Checklist
 
-2. Create `utils.js` with API endpoint
-```javascript
-export const API_URL = 'YOUR_AWS_API_GATEWAY_ENDPOINT';
-```
+### Serverless Backend Verification
+- ✅ Lambda function created
+- ✅ IAM roles configured
+- ✅ API Gateway integrated
+- ✅ CORS enabled
+- ✅ Environment variables set
 
-## 🚢 Deployment
+### Frontend Verification
+- ✅ Amplify hosting configured
+- ✅ Build settings correct
+- ✅ Custom domain (optional)
 
-### Backend Deployment
+## Estimated Costs
 
-1. Deploy serverless backend
-```bash
-serverless deploy --stage production
-```
+- Lambda: Free tier available (1M free requests/month)
+- DynamoDB: $1.25 per million read/write units
+- Amplify Hosting: Free tier, then $0.01/build minute
+- API Gateway: Free tier, then $3.50/million requests
 
-2. Note the API Gateway endpoint URL
+## Troubleshooting
 
-### Frontend Deployment
+1. Check Lambda function logs
+2. Verify API Gateway configurations
+3. Review IAM role permissions
+4. Validate environment variables
 
-1. Build React application
-```bash
-npm run build
-```
+## Best Practices
 
-2. Deploy to AWS S3 and CloudFront
-```bash
-aws s3 sync build/ s3://your-bucket-name
-```
-
-## 🔒 Security Considerations
-
-- Use AWS IAM Roles with least privilege
-- Enable API Gateway authentication
-- Implement input validation
-- Use HTTPS for all communications
-
-## 📊 Cost Optimization
-
-- Utilize AWS Lambda's free tier
-- Implement DynamoDB Pay-per-request capacity
-- Use CloudFront for efficient content delivery
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
-
-## 📜 License
-
-This project is open-source and available under the MIT License.
-
-## 🛟 Support
-
-For issues or questions, please open a GitHub issue in the [todotask-aws repository](https://github.com/yourusername/todotask-aws/issues).
+- Use least privilege IAM roles
+- Enable CloudWatch monitoring
+- Implement API Gateway caching
+- Use Amplify environment configs
