@@ -20,16 +20,11 @@ app.get("/", (req, res) => {
 app.get("/task", async (req, res) => {
   try {
     const tasks = await fetchTasks();
-
-    console.log("Fetched tasks from DynamoDB:", tasks); // Log the raw DynamoDB response
-
-    // Ensure the response format is correct
-    if (tasks && tasks.Items) {
-      res.send(tasks.Items); // Send only the Items array
-    } else {
-      console.error("Tasks format is incorrect or empty:", tasks);
-      res.status(400).send("Error: Tasks format is incorrect or empty");
-    }
+    
+    console.log("Fetched tasks from DynamoDB:", tasks);
+    
+    // Directly send the Items array
+    res.send(tasks.Items);
   } catch (err) {
     console.error("Error fetching tasks from DynamoDB:", err);
     res.status(400).send(`Error fetching tasks: ${err}`);
@@ -39,10 +34,10 @@ app.get("/task", async (req, res) => {
 app.post("/task", async (req, res) => {
   try {
     const task = req.body;
-
+    
     const response = await createTasks(task);
-
-    console.log("Created task response:", response); // Log the creation response
+    
+    console.log("Created task response:", response);
     res.send(response);
   } catch (err) {
     console.error("Error creating task:", err);
@@ -53,10 +48,10 @@ app.post("/task", async (req, res) => {
 app.put("/task", async (req, res) => {
   try {
     const task = req.body;
-
+    
     const response = await updateTasks(task);
-
-    console.log("Updated task response:", response); // Log the update response
+    
+    console.log("Updated task response:", response);
     res.send(response);
   } catch (err) {
     console.error("Error updating task:", err);
@@ -67,10 +62,10 @@ app.put("/task", async (req, res) => {
 app.delete("/task/:id", async (req, res) => {
   try {
     const { id } = req.params;
-
+    
     const response = await deleteTasks(id);
-
-    console.log("Deleted task response:", response); // Log the delete response
+    
+    console.log("Deleted task response:", response);
     res.send(response);
   } catch (err) {
     console.error("Error deleting task:", err);

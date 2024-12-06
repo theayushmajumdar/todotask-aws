@@ -19,13 +19,13 @@ export default function App() {
     try {
       // Sending GET request to fetch tasks
       const { data } = await axios.get(API_URL);
-      console.log("Fetched data from API:", data); // Log the full response from API
+      console.log("Fetched data from API:", data);
 
-      // Check if data.Items exists and is an array
-      if (Array.isArray(data.Items)) {
-        setTasks(data.Items);
+      // Since the backend is directly sending the array, use data directly
+      if (Array.isArray(data)) {
+        setTasks(data);
       } else {
-        console.error("Tasks are not in the expected format: data.Items");
+        console.error("Tasks are not in the expected format", data);
       }
     } catch (err) {
       console.log("Error fetching tasks:", err);
