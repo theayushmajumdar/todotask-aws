@@ -1,121 +1,120 @@
-# Todotask-AWS Deployment Guide
+# Todotask-AWS: Full Stack Todo Application
 
-## Deployment Architecture Overview
+## Project Overview
+Todotask-AWS is a modern, cloud-native Todo application that demonstrates a robust full-stack development approach using React, Node.js, and AWS services. This project showcases serverless architecture, providing a scalable and efficient task management solution.
 
-The Todotask-AWS application will be deployed using a serverless architecture leveraging:
-- Frontend: AWS Amplify
-- Backend: AWS Lambda
-- Database: Amazon DynamoDB
-- API Gateway: AWS API Gateway
+## 🚀 Features
+- **Interactive Frontend**: Responsive React.js user interface
+- **Robust Backend**: Node.js and Express.js powered API
+- **Cloud Storage**: AWS DynamoDB for persistent data management
+- **Serverless Deployment**: Hosted on AWS Lambda and AWS Amplify
+- **Complete CRUD Functionality**: Comprehensive task management
 
-## Detailed Deployment Steps
+## 🛠 Tech Stack
+- **Frontend**: 
+  - React.js
+  - Material-UI
+  - Axios
+- **Backend**: 
+  - Node.js
+  - Express.js
+- **Database**: AWS DynamoDB
+- **Deployment**: 
+  - AWS Lambda
+  - AWS Amplify
 
-### 1. Prepare AWS Services
+## 🔧 Setup Instructions
 
-#### DynamoDB Table Setup
-1. Open AWS DynamoDB Console
-2. Create a new table named "Tasks"
-   - Partition key: `id` (String)
-   - Sort key: Leave blank
-3. Configure read/write capacity (use On-demand for cost-efficiency)
+### Prerequisites
+- Node.js (v14+ recommended)
+- AWS Account
+- AWS CLI
+- Git
 
-### 2. Backend Deployment (Lambda)
+### Local Development Setup
 
-#### Create IAM Role for Lambda
-1. Open AWS IAM Console
-2. Create a new IAM Role
-3. Attach policies:
-   - AWSLambdaBasicExecutionRole
-   - AmazonDynamoDBFullAccess
-   - AWSAPIGatewayInvokeFullAccess
-
-#### Package Lambda Function
+1. Clone the Repository
 ```bash
-# Zip backend files
-zip -r function.zip .
-```
+git clone https://github.com/theayushmajumdar/todotask-aws.git
+cd todotask-aws
 
-#### Create Lambda Function
-1. Open AWS Lambda Console
-2. Create a new function
-3. Upload `function.zip`
-4. Set runtime to Node.js
-5. Configure handler: `index.handler`
-6. Assign the IAM role created earlier
+Backend Setup
 
-### 3. API Gateway Configuration
-1. Create new REST API
-2. Create resources matching your routes:
-   - `/task` (GET, POST, PUT)
-   - `/task/{id}` (DELETE)
-3. Integrate with Lambda function
-4. Enable CORS
-5. Deploy API and note the invoke URL
+bashCopycd backend
+npm install
+# Configure AWS credentials
+aws configure
 
-### 4. Frontend Deployment with Amplify
+Frontend Setup
 
-#### Prepare Repository
-1. Ensure `.env` file is updated with API Gateway URL
-2. Remove any local development configurations
+bashCopycd frontend
+npm install
 
-#### Amplify Deployment
-```bash
-# Install Amplify CLI
-npm install -g @aws-amplify/cli
+Environment Configuration
 
-# Configure Amplify
-amplify configure
 
-# Initialize Amplify in project
+Create .env files in both backend and frontend directories
+Add necessary AWS and API configuration variables
+
+Running Locally
+bashCopy# Backend
+cd backend
+npm start
+
+# Frontend
+cd frontend
+npm start
+🚢 Deployment
+Backend Deployment
+
+Prepare Lambda function package
+
+bashCopyzip -r backend-lambda.zip .
+
+Upload to AWS Lambda
+Configure API Gateway
+Set environment variables
+
+Frontend Deployment
+bashCopy# Using AWS Amplify CLI
 amplify init
-
-# Add hosting
 amplify add hosting
-
-# Publish
 amplify publish
-```
+🔒 Security Considerations
 
-### 5. Environment Variables
+Implement IAM roles with least privilege
+Use AWS Cognito for authentication
+Enable API Gateway authorization
+Secure DynamoDB access
 
-#### Backend Lambda
-- `DEVELOPMENT`: false
-- `AWS_REGION`: us-east-1
+📊 Cost Optimization
 
-#### Frontend Amplify
-- `REACT_APP_API_URL`: Your API Gateway URL
+Utilize AWS Lambda free tier
+Use DynamoDB on-demand capacity
+Leverage Amplify hosting
 
-## Deployment Checklist
+🚀 Future Enhancements
 
-### Serverless Backend Verification
-- ✅ Lambda function created
-- ✅ IAM roles configured
-- ✅ API Gateway integrated
-- ✅ CORS enabled
-- ✅ Environment variables set
+User authentication with AWS Cognito
+Advanced task filtering
+Improved responsive design
+Performance optimizations
 
-### Frontend Verification
-- ✅ Amplify hosting configured
-- ✅ Build settings correct
-- ✅ Custom domain (optional)
+🤝 Contributing
 
-## Estimated Costs
+Fork the repository
+Create your feature branch
+Commit your changes
+Push to the branch
+Create a Pull Request
 
-- Lambda: Free tier available (1M free requests/month)
-- DynamoDB: $1.25 per million read/write units
-- Amplify Hosting: Free tier, then $0.01/build minute
-- API Gateway: Free tier, then $3.50/million requests
+📜 License
+MIT License - See LICENSE for details
+📧 Contact
 
-## Troubleshooting
+Author: Ayush Majumdar
+GitHub: @theayushmajumdar
+Project Link: Todotask-AWS Repository
 
-1. Check Lambda function logs
-2. Verify API Gateway configurations
-3. Review IAM role permissions
-4. Validate environment variables
-
-## Best Practices
-
-- Use least privilege IAM roles
-- Enable CloudWatch monitoring
-- Implement API Gateway caching
-- Use Amplify environment configs
+🌟 Show Your Support
+Give a ⭐️ if this project helped you!
